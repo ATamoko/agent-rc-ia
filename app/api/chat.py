@@ -2,15 +2,12 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import Optional
 
-from app.services.agent import AgentService
-
+from app.services.agent import ChatAgent
 
 router = APIRouter(
     prefix="/chat",
     tags=["Chat"]
 )
-
-agent = AgentService()
 
 # ---------- MODELS ----------
 
@@ -23,8 +20,11 @@ class ChatResponse(BaseModel):
     response: str
 
 
-# ---------- GET (pour navigateur) ----------
+# ---------- INIT AGENT ----------
+agent = ChatAgent()
 
+
+# ---------- GET (navigateur) ----------
 @router.get("/")
 def chat_info():
     return {
@@ -33,12 +33,11 @@ def chat_info():
 
 
 # ---------- POST (API réelle) ----------
-
 @router.post("/", response_model=ChatResponse)
 def chat_endpoint(payload: ChatRequest):
-    response = agent.handle_message(
+    reply = agent.reply(
         message=payload.message,
         client_id=payload.client_id
     )
 
-    return ChatResponse(response=response)
+    return ChatResponse(response=reply)

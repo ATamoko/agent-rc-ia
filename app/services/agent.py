@@ -1,11 +1,12 @@
-class AgentService:
+class ChatAgent:
     """
-    Cœur logique de l'agent Relation Client IA
-    (IA branchée plus tard)
+    Agent IA minimal (logique métier).
+    La connexion à OpenAI viendra ensuite.
     """
 
-    def handle_message(self, message: str, client_id: str | None = None) -> str:
+    def reply(self, message: str, client_id: str | None = None) -> str:
+        # Logique simple pour l’instant
         return (
-            f"Message reçu : '{message}'. "
-            "Un agent vous répondra sous peu."
+            f"[Agent IA] J'ai bien reçu votre message : '{message}'. "
+            "Un conseiller virtuel va analyser votre demande."
         )
