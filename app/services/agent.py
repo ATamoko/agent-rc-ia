@@ -1,12 +1,29 @@
+import os
+from openai import OpenAI
+
+
 class ChatAgent:
-    """
-    Agent IA minimal (logique métier).
-    La connexion à OpenAI viendra ensuite.
-    """
+    def __init__(self):
+        self.client = OpenAI(
+            api_key=os.getenv("OPENAI_API_KEY")
+        )
+
+        self.system_prompt = (
+            "Tu es un responsable relation client professionnel, "
+            "courtois, clair et orienté solution. "
+            "Tu aides les clients concernant leurs commandes, "
+            "retours, remboursements et problèmes de livraison."
+        )
 
     def reply(self, message: str, client_id: str | None = None) -> str:
-        # Logique simple pour l’instant
-        return (
-            f"[Agent IA] J'ai bien reçu votre message : '{message}'. "
-            "Un conseiller virtuel va analyser votre demande."
+        response = self.client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": self.system_prompt},
+                {"role": "user", "content": message},
+            ],
+            temperature=0.3,
         )
+
+        return response.choices[0].message.content
+
