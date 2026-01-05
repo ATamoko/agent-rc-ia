@@ -2,10 +2,15 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import Optional
 
+from app.services.agent import AgentService
+
+
 router = APIRouter(
     prefix="/chat",
     tags=["Chat"]
 )
+
+agent = AgentService()
 
 # ---------- MODELS ----------
 
@@ -31,6 +36,9 @@ def chat_info():
 
 @router.post("/", response_model=ChatResponse)
 def chat_endpoint(payload: ChatRequest):
-    return ChatResponse(
-        response=f"Message reçu : '{payload.message}'. Un agent vous répondra sous peu."
+    response = agent.handle_message(
+        message=payload.message,
+        client_id=payload.client_id
     )
+
+    return ChatResponse(response=response)
